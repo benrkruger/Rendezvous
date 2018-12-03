@@ -1,0 +1,30 @@
+<div id="teams-page">
+    <div class="row">
+        <div class="col-8">
+            <sign-up-static-heading></sign-up-static-heading>
+
+            <instructions details="View your teams, join a new team, and edit team schedules."></instructions>
+
+            {{! I don't think we need this part (not yet anyway)}}
+            <div v-if="errors.length">
+                <h2>There are errors on this form:</h2>
+                <error-msge
+                        v-for="(error, idx) in errors"
+                        v-bind:severity="error.severity"
+                        v-bind:msge="error.msge"
+                        v-bind:key="idx + 1">
+                </error-msge>
+            </div>
+
+            <form id="join-team-form" method="POST">
+                <div class="form-group">
+                    <label for="team-name">Email Address</label>
+                    <input class="form-control" id="teamName" name="teamName" type="text" placeholder="Your team's name" required>
+                </div>
+                <input class="btn btn-primary" type="submit" value="Join ">
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/public/teams.js"></script>
