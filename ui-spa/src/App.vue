@@ -21,4 +21,7 @@ export default {
         NavBar
     }
 };
+
+//NavBar.mybtn.hidden();
+//NavBar.teambtn.hidden();
 </script>

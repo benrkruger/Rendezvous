@@ -43,9 +43,10 @@ async function init() {
 
     // Configure routes.
     server.route([
+        /*
         {
             method:"GET",
-            path:"api/acounts",
+            path:"api/accounts",
             config: {
                 description: "Log in",
                 validate: {
@@ -73,7 +74,7 @@ async function init() {
                 }
             }
         },
-        /*{
+        {
             method: "PATCH",
             path:"/api/accounts",
             config: {
