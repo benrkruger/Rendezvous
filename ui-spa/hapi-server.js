@@ -43,26 +43,26 @@ async function init() {
 
     // Configure routes.
     server.route([
-        /*
         {
             method:"GET",
-            path:"api/accounts",
+            path:"/api/member/{email}",
             config: {
                 description: "Log in",
                 validate: {
-                    payload: {
+                    params: {
                         email: Joi.string()
                             .email()
                             .required(),
-                        password: Joi.string().required(),
+                        password: Joi.string().required()
                     }
                 }
             },
             handler: async (request, h)=>{
-                let check = await knex("accounts")
+                let check = await knex("member/{email}")
                     .select('password')
-                    .where('email',request.payload.email);
-                if (check[0]!=request.payload.password){
+                    .where('email',request.params.email);
+
+                if (check[0]!=request.params.password){
                     return{
                         ok: false,
                         msge: `Login failed`
@@ -74,7 +74,7 @@ async function init() {
                 }
             }
         },
-        {
+        /*{
             method: "PATCH",
             path:"/api/accounts",
             config: {

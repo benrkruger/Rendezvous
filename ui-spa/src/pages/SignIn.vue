@@ -20,7 +20,7 @@
                 label="password"
             ></v-text-field>
             <v-btn v-bind:disabled="!valid" v-on:click="handleSubmit"
-                >Reset Password
+                >Sign In
             </v-btn>
         </v-form>
 
@@ -88,12 +88,11 @@ export default {
     methods: {
         handleSubmit: function() {
             axios
-                //request password coresponding to email and make sure the current matches
-
-                //change to post with new passwords
-                .get("/api/acounts", {
-                    email: this.email,
-                    password: this.password,
+                .get("/api/member/{email}", {
+                    params: {
+                        email: this.email,
+                        password: this.password,
+                    }
                 })
                 .then(result => {
                     if (result.status === 200) {
@@ -104,7 +103,7 @@ export default {
                         }
                     }
                 })
-                .catch(err => this.showDialog("Failed", err));
+                .catch(err => this.showDialog("Failed haha", err));
         },
         showDialog: function(header, text) {
             this.dialogHeader = header;
@@ -113,7 +112,7 @@ export default {
         },
         hideDialog: function() {
             this.dialogVisible = false;
-            this.$router.push({ name: "my-page" });
+            this.$router.push({ name: "sign-in" });
         }
     }
 };
