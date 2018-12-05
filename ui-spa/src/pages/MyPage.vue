@@ -1,7 +1,16 @@
 <template>
+    <section>
     <div>
-        <h4 class="display-1">Welcome, Single-Page App User</h4>
+        <h4 class="display-1">My Page</h4>
 
-        <p class="body-1">This is our award-winning home page.</p>
+        <instructions details="Sign in here." />
+
+        <v-btn id="commitments">Update Commitments</v-btn>
+
+        <v-btn id="core">Change Core Hours</v-btn>
+
+        <v-btn id="pending">Pending Activities</v-btn>
+
     </div>
+    </section>
 </template>

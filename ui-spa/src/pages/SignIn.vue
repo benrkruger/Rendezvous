@@ -2,7 +2,7 @@
     <div>
         <h4 class="display-1">Sign In</h4>
 
-        <instructions details="Sign in." />
+        <instructions details="Sign in here." />
 
         <v-form v-model="valid">
             <v-text-field
