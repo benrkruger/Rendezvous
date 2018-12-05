@@ -44,12 +44,12 @@ async function init() {
     // Configure routes.
     server.route([
         {
-            method:"GET",
-            path:"/api/member/{email}",
+            method:"POST",
+            path:"/api/member/",
             config: {
                 description: "Log in",
                 validate: {
-                    params: {
+                    payload: {
                         email: Joi.string()
                             .email()
                             .required(),
@@ -58,11 +58,71 @@ async function init() {
                 }
             },
             handler: async (request, h)=>{
-                let check = await knex("member/{email}")
+                let check = await knex("member")
                     .select('password')
-                    .where('email',request.params.email);
+                    .where('email',request.payload.email);
 
-                if (check[0]!=request.params.password){
+                if (check[0].password!=request.payload.password){
+                    return{
+                        ok: false,
+                        msge: `Login failed`
+                    }
+                }
+                return{
+                    ok:true,
+                    msge:`Login sucsess`
+                }
+            }
+        },
+        {
+            method:"POST",
+            path:"/api/team/",
+            config: {
+                description: "Create Team",
+                validate: {
+                    payload: {
+                        teamName: Joi.string().required()
+                    }
+                }
+            },
+            handler: async (request, h)=>{
+                let check = await knex("team")
+                    .select('teamName')
+                    .where('teamName',request.payload.teamName);
+
+                if (check[0].teamName==request.payload.teamName){
+                    return{
+                        ok: false,
+                        msge: `This team already exists`
+                    }
+                }
+
+                let insert= await knex("team")
+                    .insert(request.payload.teamName)
+                
+                return{
+                    ok:true,
+                    msge:`Login sucsess`
+                }
+            }
+        },
+        {
+            method:"POST",
+            path:"/api/memberteams/",
+            config: {
+                description: "Create Team",
+                validate: {
+                    payload: {
+                        teamName: Joi.string().required()
+                    }
+                }
+            },
+            handler: async (request, h)=>{
+                let check = await knex("member")
+                    .select('password')
+                    .where('email',request.payload.email);
+
+                if (check[0].password!=request.payload.password){
                     return{
                         ok: false,
                         msge: `Login failed`

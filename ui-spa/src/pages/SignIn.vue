@@ -2,7 +2,7 @@
     <div>
         <h4 class="display-1">Sign In</h4>
 
-        <instructions details="Sign in here." />
+        <instructions details="Enter your username and password to access Rendezvous." />
 
         <v-form v-model="valid">
             <v-text-field
@@ -17,11 +17,9 @@
                 v-bind:rules="rules.password"
                 error-count="10"
                 type="password"
-                label="password"
+                label="Password"
             ></v-text-field>
-            <v-btn v-bind:disabled="!valid" v-on:click="handleSubmit"
-                >Sign In
-            </v-btn>
+            <v-btn v-bind:disabled="!valid" v-on:click="handleSubmit">Sign In</v-btn>
         </v-form>
 
         <div class="text-xs-center">
@@ -88,11 +86,9 @@ export default {
     methods: {
         handleSubmit: function() {
             axios
-                .get("/api/member/{email}", {
-                    params: {
+                .post("/api/member/", {
                         email: this.email,
                         password: this.password,
-                    }
                 })
                 .then(result => {
                     if (result.status === 200) {
@@ -103,7 +99,7 @@ export default {
                         }
                     }
                 })
-                .catch(err => this.showDialog("Failed haha", err));
+                .catch(err => this.showDialog("Failed", err));
         },
         showDialog: function(header, text) {
             this.dialogHeader = header;
@@ -112,7 +108,12 @@ export default {
         },
         hideDialog: function() {
             this.dialogVisible = false;
-            this.$router.push({ name: "sign-in" });
+            if (this.dialogHeader=="Success"){
+                this.$router.push({ name: "my-page" });
+            }
+            else{
+                this.$router.push({ name: "sign-in" });
+            }
         }
     }
 };

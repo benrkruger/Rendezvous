@@ -1,39 +1,28 @@
 <template>
     <div>
-        <h4 class="display-1">Sign Up</h4>
+        <h4 class="display-1">Team Page</h4>
 
-        <instructions details="Sinup for our nifty site." />
+        <instructions details="Join and edit your teams here" />
 
         <v-form v-model="valid">
             <v-text-field
-                v-model="firstName"
+                v-model="joinName"
                 v-bind:rules="rules.required"
-                label="First name"
+                label="Join a team"
             ></v-text-field>
+            <v-btn v-bind:disabled="!valid" v-on:click="handleJoin"
+                >Join Team
+            </v-btn>
+        </v-form>
+
+        <v-form v-model="valid">
             <v-text-field
-                v-model="lastName"
+                v-model="createName"
                 v-bind:rules="rules.required"
-                label="Last name"
+                label="Create a team"
             ></v-text-field>
-            <v-text-field
-                v-model="email"
-                v-bind:rules="rules.email"
-                error-count="10"
-                type="email"
-                label="Your email address"
-            >
-            </v-text-field>
-            <v-text-field
-                v-model="password"
-                v-bind:rules="rules.password"
-                error-count="10"
-                type="password"
-                label="Non-trivial password"
-                required
-            >
-            </v-text-field>
-            <v-btn v-bind:disabled="!valid" v-on:click="handleSubmit"
-                >Sign Up
+            <v-btn v-bind:disabled="!valid" v-on:click="handleCreate"
+                >Create Team
             </v-btn>
         </v-form>
 
@@ -65,17 +54,15 @@ import Instructions from "../components/Instructions.vue";
 import axios from "axios";
 
 export default {
-    name: "SignUpPage",
+    name: "TeamPage",
     components: {
         Instructions
     },
     data: function() {
         return {
             valid: false,
-            firstName: "",
-            lastName: "",
-            email: "",
-            password: "",
+            joinName: "",
+            createName: "",
 
             dialogHeader: "<no dialogHeader>",
             dialogText: "<no dialogText>",
@@ -98,18 +85,27 @@ export default {
         };
     },
     methods: {
-        handleSubmit: function() {
+        handleJoin: function() {
             axios
-                .post("/api/accounts", {
-                    firstName: this.firstName,
-                    lastName: this.lastName,
-                    email: this.email,
-                    password: this.password,
-                })
+                .post("/api/memberteams/", this.joinTeam)
                 .then(result => {
                     if (result.status === 200) {
                         if (result.data.ok) {
                             this.showDialog("Success", result.data.msge);
+                        } else {
+                            this.showDialog("Sorry", result.data.msge);
+                        }
+                    }
+                })
+                .catch(err => this.showDialog("Failed", err));
+        },
+        handleCreate: function() {
+            axios
+                .post("/api/team/", this.createName)
+                .then (result => {
+                    if (result.status === 200) {
+                        if (result.data.ok) {
+                            this.showDialog("Created Team", result.data.msge);
                         } else {
                             this.showDialog("Sorry", result.data.msge);
                         }
@@ -124,7 +120,7 @@ export default {
         },
         hideDialog: function() {
             this.dialogVisible = false;
-            this.$router.push({ name: "home-page" });
+            this.$router.push({ name: "team-page" });
         }
     }
 };
