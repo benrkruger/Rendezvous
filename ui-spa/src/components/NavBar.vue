@@ -1,6 +1,6 @@
 <template>
     <v-toolbar dark color="primary">
-        <v-toolbar-side-icon></v-toolbar-side-icon>
+        <!--<v-toolbar-side-icon></v-toolbar-side-icon>-->
 
         <v-toolbar-title class="white--text">
             Rendezvous

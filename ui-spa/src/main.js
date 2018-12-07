@@ -30,6 +30,9 @@ import App from "./App.vue";
 
 new Vue({
     el: "#app",
+    data: {
+        currentUser: null
+    },
     router,
     render: h => h(App)
 });

@@ -85,10 +85,13 @@ export default {
     },
     methods: {
         handleSubmit: function() {
+            this.$root.currentUser=this.email;
             axios
                 .post("/api/member/", {
                         email: this.email,
                         password: this.password,
+                        coreStart: "null",
+                        coreEnd: "null",
                 })
                 .then(result => {
                     if (result.status === 200) {
@@ -115,6 +118,15 @@ export default {
                 this.$router.push({ name: "sign-in" });
             }
         }
-    }
+    },
+    computed: {
+            currentUser: function() {
+                if (this.$root.currentUser) {
+                    return this.$root.currentUser;
+                } else {
+                    return "No one logged in";
+                }
+            }
+    },
 };
 </script>

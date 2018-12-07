@@ -47,31 +47,48 @@ async function init() {
             method:"POST",
             path:"/api/member/",
             config: {
-                description: "Log in",
+                description: "Log in/ Change Core Hours",
                 validate: {
                     payload: {
                         email: Joi.string()
                             .email()
                             .required(),
-                        password: Joi.string().required()
+                        password: Joi.string().required(),
+                        coreStart: Joi.string().required(),
+                        coreEnd: Joi.string().required(),
                     }
                 }
             },
             handler: async (request, h)=>{
-                let check = await knex("member")
-                    .select('password')
-                    .where('email',request.payload.email);
+                if (request.payload.coreEnd=="null"){
+                    let check = await knex("member")
+                        .select("password")
+                        .where("email",request.payload.email);
 
-                if (check[0].password!=request.payload.password){
+                    if (check[0].password!=request.payload.password){
+                        return{
+                            ok: false,
+                            msge: `Login failed`
+                        }
+                    }
                     return{
-                        ok: false,
-                        msge: `Login failed`
+                        ok:true,
+                        msge:`Login sucsess`
                     }
                 }
-                return{
-                    ok:true,
-                    msge:`Login sucsess`
-                }
+                let hours = await knex("member")
+                    .select("corestart","coreend")
+                    .where("email",request.payload.email)
+                    .update({
+                        corestart: request.payload.coreStart,
+                        coreend: request.payload.coreEnd,
+                    });
+
+                let core = await knex("member")
+                    .select()
+                    .where("email",request.payload.email)
+
+                    return core
             }
         },
         {
@@ -86,23 +103,11 @@ async function init() {
                 }
             },
             handler: async (request, h)=>{
-                let check = await knex("team")
-                    .select('teamName')
-                    .where('teamName',request.payload.teamName);
-
-                if (check[0].teamName==request.payload.teamName){
-                    return{
-                        ok: false,
-                        msge: `This team already exists`
-                    }
-                }
-
                 let insert= await knex("team")
-                    .insert(request.payload.teamName)
-                
+                    .insert({teamname: request.payload.teamName});
                 return{
                     ok:true,
-                    msge:`Login sucsess`
+                    msge:`Creation was a sucsess`
                 }
             }
         },
@@ -110,30 +115,96 @@ async function init() {
             method:"POST",
             path:"/api/memberteams/",
             config: {
-                description: "Create Team",
+                description: "Join Team",
                 validate: {
                     payload: {
-                        teamName: Joi.string().required()
+                        teamName: Joi.string().required(),
+                        email: Joi.string().required()
                     }
                 }
             },
             handler: async (request, h)=>{
-                let check = await knex("member")
-                    .select('password')
-                    .where('email',request.payload.email);
+                if (request.payload.teamName=="null"){
+                    let teams= await knex("memberteams")
+                    .select("teamname")
+                    .where ("email",request.payload.email);
 
-                if (check[0].password!=request.payload.password){
-                    return{
-                        ok: false,
-                        msge: `Login failed`
-                    }
+                    return teams
                 }
+                let check = await knex("memberteams")
+                    .insert({
+                        teamname: request.payload.teamName,
+                        email: request.payload.email,
+                    })
                 return{
                     ok:true,
-                    msge:`Login sucsess`
+                    msge:`Joining was a sucsess`
                 }
             }
         },
+        {
+            method:"POST",
+            path:"/api/commitments/",
+            config: {
+                description: "Show Commitments",
+                validate: {
+                    payload: {
+                        email: Joi.string().required(),
+                        name: Joi.string().required(),
+                        starttime: Joi.string().required(),
+                        endtime: Joi.string().required(),
+                        date: Joi.string().required(),
+                    }
+                }
+            },
+            handler: async (request, h)=>{
+                if (request.payload.name=="null"){
+                    let commitments= await knex("commitments")
+                    .select("name","starttime","endtime","date")
+                    .where ("email",request.payload.email);
+
+                    return commitments
+                }
+
+                let commitment= await knex("commitments")
+                    .insert({
+                        name: request.payload.name,
+                        starttime: request.payload.starttime,
+                        date: request.payload.date,
+                        email: request.payload.email,
+                        endtime: request.payload.endtime,
+                    })
+
+                return{
+                    ok:true,
+                    msge:`Joining was a sucsess`
+                }
+
+            }
+        },
+       /* {
+            method:"GET",
+            path:"/api/memberteams/",
+            config: {
+                description: "Request Team Names",
+                validate: {
+                    params: {
+                        member: Joi.string().required(),
+                    }
+                }
+            },
+            handler: async (request, h)=>{
+                console.log('TEAM Member: ' + request.params.member)
+                let teams = await knex("memberteams")
+                    .select("teamname")
+                    .where ("email",request.params.member)
+                console.log(teams)
+                console.log('AFSADFASDFSDAFASDFDSAFASDFSADFSDFASDFASDFASDFSDAFASDFDSAFASDFASDFSDAFASDZF')
+                return{
+                    teams
+                }
+            }
+        },*/
         /*{
             method: "PATCH",
             path:"/api/accounts",
